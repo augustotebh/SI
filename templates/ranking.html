@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking</title>
+</head>
+<body>
+    <h1>Ranking dos Participantes</h1>
+    <ol>
+        {% for r in ranking %}
+            <li>{{ r.nome }} - {{ r.score }}%</li>
+        {% endfor %}
+    </ol>
+    <p><a href="/">Voltar ao Quiz</a></p>
+</body>
+</html>

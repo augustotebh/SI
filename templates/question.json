@@ -1,0 +1,72 @@
+[
+    {
+        "pergunta": "Qual é um exemplo de engenharia social?",
+        "opcoes": ["Phishing", "Firewall", "Backup", "Antivírus"],
+        "resposta": "Phishing"
+    },
+    {
+        "pergunta": "Qual dessas é uma boa prática de segurança?",
+        "opcoes": ["Usar a mesma senha para tudo", "Desativar o antivírus", "Atualizar o sistema regularmente", "Evitar atualizações"],
+        "resposta": "Atualizar o sistema regularmente"
+    },
+    {
+        "pergunta": "O que é um ransomware?",
+        "opcoes": [
+            "Um tipo de firewall",
+            "Um software de backup",
+            "Um malware que sequestra dados",
+            "Um antivírus gratuito"
+        ],
+        "resposta": "Um malware que sequestra dados"
+    },
+    {
+        "pergunta": "Em home office, o uso de VPN é recomendado para:",
+        "opcoes": ["Acessar sites de entretenimento", "Garantir conexão segura à rede da empresa", "Aumentar a velocidade da internet", "Evitar cobrança de internet"],
+        "resposta": "Garantir conexão segura à rede da empresa"
+    },
+    {
+        "pergunta": "Qual é o principal risco de usar Wi-Fi público?",
+        "opcoes": ["Conexão lenta", "Cobrança indevida", "Roubo de dados", "Perda de sinal"],
+        "resposta": "Roubo de dados"
+    },
+    {
+        "pergunta": "O que é o Sophos Endpoint Protection?",
+        "opcoes": ["Um software de design gráfico", "Um antivírus para celular", "Uma solução de segurança para endpoints", "Um jogo online"],
+        "resposta": "Uma solução de segurança para endpoints"
+    },
+    {
+        "pergunta": "Qual dessas ações NÃO é segura durante o home office?",
+        "opcoes": ["Trabalhar em locais públicos sem VPN", "Manter o sistema atualizado", "Usar autenticação multifator", "Ter senha forte no roteador"],
+        "resposta": "Trabalhar em locais públicos sem VPN"
+    },
+    {
+        "pergunta": "Qual funcionalidade o Sophos Intercept X oferece?",
+        "opcoes": ["Aceleração de vídeo", "Detecção de malware com deep learning", "Download de jogos", "Gestão de redes sociais"],
+        "resposta": "Detecção de malware com deep learning"
+    },
+    {
+        "pergunta": "Qual dessas senhas é mais segura?",
+        "opcoes": ["123456", "Senha123", "admin2021", "S@f3H0me!2024"],
+        "resposta": "S@f3H0me!2024"
+    },
+    {
+        "pergunta": "Por que o backup é importante no home office?",
+        "opcoes": [
+            "Para liberar espaço no HD",
+            "Para salvar jogos",
+            "Para recuperar dados após ataques ou falhas",
+            "Para desinstalar o antivírus"
+        ],
+        "resposta": "Para recuperar dados após ataques ou falhas"
+    },
+    {
+        "pergunta": "O que é autenticação de dois fatores (2FA)?",
+        "opcoes": [
+            "Dois antivírus instalados",
+            "Acesso via dois dispositivos diferentes",
+            "Confirmação adicional além da senha",
+            "Usar a mesma senha em dois sites"
+        ],
+        "resposta": "Confirmação adicional além da senha"
+    }
+]

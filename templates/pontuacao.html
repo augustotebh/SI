@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado do Quiz</title>
+</head>
+<body>
+    <h1>Resultado do Quiz</h1>
+    <p>Parabéns, {{ nome }}!</p>
+    <p>Você acertou {{ acertos }} de {{ total }} perguntas.</p>
+    <p>Porcentagem de acertos: {{ percentual }}%</p>
+
+    {% if aprovado %}
+        <p><strong>Parabéns, você atingiu a pontuação mínima! 🎉</strong></p>
+        <p>
+            <a href="{{ url_for('baixar_certificado', filename=nome_arquivo) }}" download>Baixar Certificado</a>
+        </p>
+    {% else %}
+        <p><strong>Infelizmente, você não atingiu a pontuação mínima. 😔</strong></p>
+    {% endif %}
+</body>
+</html>

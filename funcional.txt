@@ -1,0 +1,61 @@
+from flask import Flask, render_template, request, send_file
+from fpdf import FPDF
+from io import BytesIO
+
+app = Flask(__name__)
+
+# Lista com 12 perguntas
+perguntas = [
+    {'pergunta': 'O que é Phishing?', 'opcoes': ['Ataque cibernético', 'Sistema operacional', 'Antivírus', 'Firewall'], 'resposta': 'Ataque cibernético'},
+    {'pergunta': 'O que é autenticação de dois fatores (2FA)?', 'opcoes': ['Um firewall', 'Um tipo de vírus', 'Uma camada extra de segurança', 'Uma rede social'], 'resposta': 'Uma camada extra de segurança'},
+    {'pergunta': 'Qual senha é mais segura?', 'opcoes': ['123456', 'senha123', 'Uma senha longa com letras, números e símbolos', 'Data de nascimento'], 'resposta': 'Uma senha longa com letras, números e símbolos'},
+    {'pergunta': 'O que significa criptografia?', 'opcoes': ['Apagar dados', 'Proteger dados tornando-os ilegíveis para terceiros', 'Formatar o computador', 'Criar vírus'], 'resposta': 'Proteger dados tornando-os ilegíveis para terceiros'},
+    {'pergunta': 'É seguro clicar em links de e-mails desconhecidos?', 'opcoes': ['Sim', 'Não'], 'resposta': 'Não'},
+    {'pergunta': 'O que é um ransomware?', 'opcoes': ['Programa educativo', 'Vírus que sequestra dados', 'Aplicativo de videoconferência', 'Software antivírus'], 'resposta': 'Vírus que sequestra dados'},
+    {'pergunta': 'Qual é a melhor prática para criar senhas?', 'opcoes': ['Usar a mesma senha em todos os sites', 'Anotar em papel', 'Criar senhas fortes e únicas', 'Usar apenas números'], 'resposta': 'Criar senhas fortes e únicas'},
+    {'pergunta': 'Como manter o sistema seguro?', 'opcoes': ['Atualizando sempre', 'Ignorando atualizações', 'Deixando desligado', 'Formatando todo mês'], 'resposta': 'Atualizando sempre'},
+    {'pergunta': 'É seguro usar redes Wi-Fi públicas para acessar dados bancários?', 'opcoes': ['Sim', 'Não'], 'resposta': 'Não'},
+    {'pergunta': 'O que é engenharia social?', 'opcoes': ['Tipo de construção', 'Técnica para enganar pessoas e obter informações', 'Curso de engenharia', 'Software antivírus'], 'resposta': 'Técnica para enganar pessoas e obter informações'},
+    {'pergunta': 'Como identificar um site seguro?', 'opcoes': ['Começa com http', 'Tem um cadeado e https', 'Cor vermelha', 'Nome estranho'], 'resposta': 'Tem um cadeado e https'},
+    {'pergunta': 'Você deve compartilhar suas senhas com alguém?', 'opcoes': ['Sim', 'Não'], 'resposta': 'Não'}
+]
+
+def gerar_certificado(nome):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=24)
+    pdf.cell(0, 10, "Certificado de Conclusão", ln=True, align='C')
+    pdf.ln(20)
+    pdf.set_font("Arial", size=16)
+    pdf.cell(0, 10, f"Parabéns, {nome}!", ln=True, align='C')
+    pdf.ln(10)
+    pdf.cell(0, 10, "Você concluiu o Quiz de Segurança da Informação.", ln=True, align='C')
+    
+    output = BytesIO()
+    pdf_bytes = pdf.output(dest='S').encode('latin1')
+    output.write(pdf_bytes)
+    output.seek(0)
+    return output
+
+@app.route('/', methods=['GET', 'POST'])
+def quiz():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+
+        respostas_usuario = []
+        for idx in range(len(perguntas)):
+            resposta = request.form.get(f'pergunta_{idx}')
+            respostas_usuario.append(resposta)
+
+        certificado = gerar_certificado(nome)
+
+        return send_file(
+            certificado,
+            as_attachment=True,
+            download_name=f'certificado_{nome}.pdf',
+            mimetype='application/pdf'
+        )
+    return render_template('quiz.html', perguntas=perguntas)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

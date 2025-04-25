@@ -1,0 +1,62 @@
+[
+  {
+    "pergunta": "O que significa o termo 'phishing' em segurança da informação?",
+    "alternativas": ["Pesca de dados em servidores", "Técnica de ataque por e-mail falso", "Acesso remoto autorizado", "Backup automático na nuvem"],
+    "resposta": "Técnica de ataque por e-mail falso"
+  },
+  {
+    "pergunta": "Qual das opções é a melhor prática para criação de senhas seguras?",
+    "alternativas": ["Usar datas de aniversário", "Utilizar a mesma senha em todos os sites", "Criar senhas longas com letras, números e símbolos", "Anotar a senha em papel"],
+    "resposta": "Criar senhas longas com letras, números e símbolos"
+  },
+  {
+    "pergunta": "O que é autenticação de dois fatores (2FA)?",
+    "alternativas": ["Dois usuários acessando o mesmo sistema", "Dois dispositivos conectados", "Verificação em duas etapas para acesso", "Senha duplicada"],
+    "resposta": "Verificação em duas etapas para acesso"
+  },
+  {
+    "pergunta": "Qual ação pode indicar um ataque de engenharia social?",
+    "alternativas": ["Atualização automática do sistema", "Solicitação de senha por e-mail", "Acesso negado a um site", "Instalação de antivírus"],
+    "resposta": "Solicitação de senha por e-mail"
+  },
+  {
+    "pergunta": "Qual software ajuda na proteção contra malwares?",
+    "alternativas": ["Navegador de internet", "Editor de texto", "Antivírus", "Planilha eletrônica"],
+    "resposta": "Antivírus"
+  },
+  {
+    "pergunta": "Qual prática ajuda a manter um ambiente seguro no home office?",
+    "alternativas": ["Usar redes Wi-Fi públicas", "Desativar o firewall", "Atualizar sistemas regularmente", "Compartilhar senhas com colegas"],
+    "resposta": "Atualizar sistemas regularmente"
+  },
+  {
+    "pergunta": "O que é um ransomware?",
+    "alternativas": ["Um tipo de antivírus", "Atualização de segurança", "Programa que bloqueia dados e exige resgate", "Ferramenta de backup"],
+    "resposta": "Programa que bloqueia dados e exige resgate"
+  },
+  {
+    "pergunta": "Como identificar um site seguro?",
+    "alternativas": ["O site abre rapidamente", "Possui certificado HTTPS", "Não pede login", "Tem muitas propagandas"],
+    "resposta": "Possui certificado HTTPS"
+  },
+  {
+    "pergunta": "O que fazer ao receber um e-mail suspeito?",
+    "alternativas": ["Abrir o anexo para verificar", "Responder pedindo mais informações", "Encaminhar ao suporte e não clicar", "Ignorar e apagar imediatamente"],
+    "resposta": "Encaminhar ao suporte e não clicar"
+  },
+  {
+    "pergunta": "Qual é o risco de usar a mesma senha em vários serviços?",
+    "alternativas": ["Nenhum, é mais fácil lembrar", "A senha pode ser bloqueada", "Maior risco em caso de vazamento", "Pode aumentar o desempenho do sistema"],
+    "resposta": "Maior risco em caso de vazamento"
+  },
+  {
+    "pergunta": "Dispositivos pessoais devem ser usados no trabalho sem autorização?",
+    "alternativas": ["Sim, sempre que necessário", "Apenas para acessar redes sociais", "Não, salvo se autorizado pela empresa", "Somente se o antivírus estiver ativado"],
+    "resposta": "Não, salvo se autorizado pela empresa"
+  },
+  {
+    "pergunta": "Qual comportamento NÃO é adequado em ambientes digitais corporativos?",
+    "alternativas": ["Evitar clicar em links desconhecidos", "Compartilhar arquivos confidenciais por e-mail pessoal", "Usar VPN da empresa", "Manter software atualizado"],
+    "resposta": "Compartilhar arquivos confidenciais por e-mail pessoal"
+  }
+]

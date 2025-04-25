@@ -1,0 +1,106 @@
+from flask import Flask, render_template, request, send_file
+from fpdf import FPDF
+import io
+
+app = Flask(__name__)
+
+# Lista de perguntas
+perguntas = [
+    {
+        "pergunta": "Qual é um exemplo de engenharia social?",
+        "opcoes": ["Phishing", "Firewall", "Backup", "Antivírus"],
+        "resposta": "Phishing"
+    },
+    {
+        "pergunta": "Qual dessas é uma boa prática de segurança?",
+        "opcoes": ["Usar a mesma senha para tudo", "Desativar o antivírus", "Atualizar o sistema regularmente", "Evitar atualizações"],
+        "resposta": "Atualizar o sistema regularmente"
+    },
+    {
+        "pergunta": "O que é um ransomware?",
+        "opcoes": ["Um tipo de firewall", "Um software de backup", "Um malware que sequestra dados", "Um antivírus gratuito"],
+        "resposta": "Um malware que sequestra dados"
+    },
+    {
+        "pergunta": "Em home office, o uso de VPN é recomendado para:",
+        "opcoes": ["Acessar sites de entretenimento", "Garantir conexão segura à rede da empresa", "Aumentar a velocidade da internet", "Evitar cobrança de internet"],
+        "resposta": "Garantir conexão segura à rede da empresa"
+    },
+    {
+        "pergunta": "Qual é o principal risco de usar Wi-Fi público?",
+        "opcoes": ["Conexão lenta", "Cobrança indevida", "Roubo de dados", "Perda de sinal"],
+        "resposta": "Roubo de dados"
+    },
+    {
+        "pergunta": "O que é o Sophos Endpoint Protection?",
+        "opcoes": ["Um software de design gráfico", "Um antivírus para celular", "Uma solução de segurança para endpoints", "Um jogo online"],
+        "resposta": "Uma solução de segurança para endpoints"
+    },
+    {
+        "pergunta": "Qual dessas ações NÃO é segura durante o home office?",
+        "opcoes": ["Trabalhar em locais públicos sem VPN", "Manter o sistema atualizado", "Usar autenticação multifator", "Ter senha forte no roteador"],
+        "resposta": "Trabalhar em locais públicos sem VPN"
+    },
+    {
+        "pergunta": "Qual funcionalidade o Sophos Intercept X oferece?",
+        "opcoes": ["Aceleração de vídeo", "Detecção de malware com deep learning", "Download de jogos", "Gestão de redes sociais"],
+        "resposta": "Detecção de malware com deep learning"
+    },
+    {
+        "pergunta": "Qual dessas senhas é mais segura?",
+        "opcoes": ["123456", "Senha123", "admin2021", "S@f3H0me!2024"],
+        "resposta": "S@f3H0me!2024"
+    },
+    {
+        "pergunta": "Por que o backup é importante no home office?",
+        "opcoes": ["Para liberar espaço no HD", "Para salvar jogos", "Para recuperar dados após ataques ou falhas", "Para desinstalar o antivírus"],
+        "resposta": "Para recuperar dados após ataques ou falhas"
+    },
+    {
+        "pergunta": "O que é autenticação de dois fatores (2FA)?",
+        "opcoes": ["Dois antivírus instalados", "Acesso via dois dispositivos diferentes", "Confirmação adicional além da senha", "Usar a mesma senha em dois sites"],
+        "resposta": "Confirmação adicional além da senha"
+    }
+]
+
+# Função para gerar o certificado PDF
+def gerar_certificado(nome):
+    pdf = FPDF(orientation='L', unit='mm', format='A4')
+    pdf.add_page()
+
+    pdf.set_font("Arial", 'B', 24)
+    pdf.cell(0, 30, "CERTIFICADO DE PARTICIPAÇÃO", ln=True, align='C')
+
+    pdf.set_font("Arial", '', 16)
+    pdf.ln(10)
+    pdf.cell(0, 10, f"Certificamos que {nome}", ln=True, align='C')
+    pdf.cell(0, 10, "concluiu com sucesso o Quiz de Ameaças Cibernéticas.", ln=True, align='C')
+    pdf.ln(20)
+    pdf.set_font("Arial", 'I', 12)
+    pdf.cell(0, 10, "Emitido por: Equipe de Segurança da Informação", ln=True, align='C')
+
+    output = io.BytesIO()
+    pdf.output(output)
+    output.seek(0)
+    return output
+
+@app.route('/', methods=['GET', 'POST'])
+def quiz():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        acertos = 0
+        for idx, pergunta in enumerate(perguntas):
+            resposta_usuario = request.form.get(f'pergunta_{idx}')
+            if resposta_usuario == pergunta['resposta']:
+                acertos += 1
+
+        if acertos >= len(perguntas) // 2:
+            certificado = gerar_certificado(nome)
+            return send_file(certificado, download_name=f'certificado_{nome.replace(" ", "_")}.pdf', as_attachment=True)
+        else:
+            return f"<h1>Você acertou {acertos} de {len(perguntas)} perguntas.</h1><p>Infelizmente não passou! Tente novamente.</p>"
+
+    return render_template('quiz.html', perguntas=perguntas)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)
