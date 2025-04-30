@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response, send_file
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.colors import HexColor
@@ -82,29 +82,21 @@ def submit():
 
 def generate_certificate(name, score):
     buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
+    c = canvas.Canvas(buffer, pagesize=landscape(A4))
+    width, height = landscape(A4)
 
     azul = HexColor("#003366")
     azul_claro = HexColor("#E6F0FA")
 
     # Fundo azul claro
     c.setFillColor(azul_claro)
-    c.rect(50, 100, width - 100, height - 200, fill=1, stroke=0)
+    c.roundRect(50, 50, width - 100, height - 100, radius=20, fill=1, stroke=0)
 
-    # Moldura
+    # Moldura arredondada
     margin = 40
     c.setLineWidth(4)
     c.setStrokeColor(azul)
-    c.rect(margin, margin, width - 2 * margin, height - 2 * margin)
-
-    # Cantoneiras
-    c.setLineWidth(2)
-    size = 20
-    for x, y in [(margin, margin), (margin, height - margin),
-                 (width - margin, margin), (width - margin, height - margin)]:
-        c.line(x, y, x + (size if x == margin else -size), y)
-        c.line(x, y, x, y + (size if y == margin else -size))
+    c.roundRect(margin, margin, width - 2 * margin, height - 2 * margin, radius=20, fill=0, stroke=1)
 
     # Logo
     try:
@@ -121,26 +113,26 @@ def generate_certificate(name, score):
     c.setStrokeColor(azul)
     c.setLineWidth(1)
     c.line(100, height - 150, width - 100, height - 150)
-    c.setFont("Helvetica-Bold", 24)
+    c.setFont("Helvetica-Bold", 28)
     c.setFillColor(azul)
     c.drawCentredString(width / 2, height - 170, "Certificado de Conclusão")
-    c.line(100, height - 180, width - 100, height - 180)
+    c.line(100, height - 185, width - 100, height - 185)
 
     # Nome
-    c.setFont("Helvetica", 18)
-    c.drawCentredString(width / 2, height - 220, name)
+    c.setFont("Helvetica", 20)
+    c.drawCentredString(width / 2, height - 230, name)
 
     # Pontuação e conteúdo
-    c.setFont("Helvetica", 14)
-    c.drawCentredString(width / 2, height - 260,
+    c.setFont("Helvetica", 16)
+    c.drawCentredString(width / 2, height - 270,
                         f"Pontuação: {score} pontos ({score/(len(questions)*10)*100:.0f}% de acertos)")
-    c.drawCentredString(width / 2, height - 285,
+    c.drawCentredString(width / 2, height - 295,
                         "Concluiu com sucesso o treinamento em Boas Práticas de")
-    c.drawCentredString(width / 2, height - 305, "Cibersegurança para Home Office")
+    c.drawCentredString(width / 2, height - 315, "Cibersegurança para Home Office")
 
     # Data
     c.setFont("Helvetica-Oblique", 12)
-    c.drawCentredString(width / 2, height - 340, datetime.now().strftime("%d/%m/%Y"))
+    c.drawCentredString(width / 2, height - 350, datetime.now().strftime("%d/%m/%Y"))
 
     # Assinatura (imagem + linha abaixo)
     try:
@@ -150,7 +142,7 @@ def generate_certificate(name, score):
             assinatura_width = 100
             assinatura_height = 40
             x = width / 2 - assinatura_width / 2
-            y = height - 400
+            y = height - 420
             c.drawImage(assinatura_img, x, y, width=assinatura_width, height=assinatura_height,
                         preserveAspectRatio=True, mask='auto')
             c.line(width / 2 - 60, y - 10, width / 2 + 60, y - 10)
@@ -165,7 +157,7 @@ def generate_certificate(name, score):
     qr_io.seek(0)
     qr_img = ImageReader(qr_io)
     qr_size = 80
-    c.drawImage(qr_img, width / 2 - qr_size / 2, 110, width=qr_size, height=qr_size, preserveAspectRatio=True, mask='auto')
+    c.drawImage(qr_img, width / 2 - qr_size / 2, 90, width=qr_size, height=qr_size, preserveAspectRatio=True, mask='auto')
     c.setFont("Helvetica", 8)
     c.drawCentredString(width / 2, 60, "Verifique a autenticidade em quiz.gepart.click")
 
@@ -173,9 +165,6 @@ def generate_certificate(name, score):
     c.save()
     buffer.seek(0)
     return buffer
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
