@@ -142,19 +142,22 @@ def generate_certificate(name, score):
     c.setFont("Helvetica-Oblique", 12)
     c.drawCentredString(width / 2, height - 340, datetime.now().strftime("%d/%m/%Y"))
 
-     # Assinatura
-    c.line(width / 2 - 60, height - 360, width / 2 + 60, height - 360)
+    # Assinatura (imagem + linha abaixo)
     try:
         assinatura_path = os.path.join('static', 'assinatura.png')
         with open(assinatura_path, 'rb') as img_file:
             assinatura_img = ImageReader(img_file)
-            c.drawImage(assinatura_img, width / 2 - 60, height - 370, width=120,
+            assinatura_width = 100
+            assinatura_height = 40
+            x = width / 2 - assinatura_width / 2
+            y = height - 400
+            c.drawImage(assinatura_img, x, y, width=assinatura_width, height=assinatura_height,
                         preserveAspectRatio=True, mask='auto')
+            c.line(width / 2 - 60, y - 10, width / 2 + 60, y - 10)
     except Exception as e:
         print(f"Erro ao carregar assinatura: {str(e)}")
 
-
-    # QR Code - reposicionado um pouco acima
+    # QR Code
     qr_data = f"https://quiz.gepart.click/validar?nome={name}&score={score}"
     qr = qrcode.make(qr_data)
     qr_io = BytesIO()
@@ -170,6 +173,9 @@ def generate_certificate(name, score):
     c.save()
     buffer.seek(0)
     return buffer
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
