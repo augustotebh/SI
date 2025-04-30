@@ -142,17 +142,17 @@ def generate_certificate(name, score):
     c.setFont("Helvetica-Oblique", 12)
     c.drawCentredString(width / 2, height - 340, datetime.now().strftime("%d/%m/%Y"))
 
-    # Assinatura
+     # Assinatura
     c.line(width / 2 - 60, height - 360, width / 2 + 60, height - 360)
     try:
-        assinatura_obj = s3.get_object(Bucket=app.config['S3_BUCKET'], Key='logo/assinatura.png')
-        assinatura_img = ImageReader(BytesIO(assinatura_obj['Body'].read()))
-        c.drawImage(assinatura_img, width / 2 - 60, height - 370, width=120,
-                    preserveAspectRatio=True, mask='auto')
+        assinatura_path = os.path.join('static', 'assinatura.png')
+        with open(assinatura_path, 'rb') as img_file:
+            assinatura_img = ImageReader(img_file)
+            c.drawImage(assinatura_img, width / 2 - 60, height - 370, width=120,
+                        preserveAspectRatio=True, mask='auto')
     except Exception as e:
         print(f"Erro ao carregar assinatura: {str(e)}")
 
-    c.drawCentredString(width / 2, height - 395, "Assinatura do Responsável")
 
     # QR Code - reposicionado um pouco acima
     qr_data = f"https://quiz.gepart.click/validar?nome={name}&score={score}"
