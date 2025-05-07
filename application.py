@@ -94,36 +94,38 @@ def generate_certificate(name, score):
     except Exception as e:
         print(f"Erro ao carregar imagem de fundo: {e}")
 
-    # Nome
-    c.setFont("Helvetica", 20)
+    # Nome (destaque maior)
+    c.setFillColor(azul)
+    c.setFont("Helvetica-Bold", 26)
     c.drawCentredString(width / 2, height - 210, name)
 
     # Texto e pontuação
     c.setFont("Helvetica", 16)
     c.drawCentredString(width / 2, height - 250,
-                        f"Pontuação: {score} pontos ({score/(len(questions)*10)*100:.0f}% de acertos)")
+                        f"Pontuação: {score} pontos ({score / (len(questions) * 10) * 100:.0f}% de acertos)")
     c.drawCentredString(width / 2, height - 275,
-                        "Concluiu com sucesso o treinamento em Boas Práticas de")
-    c.drawCentredString(width / 2, height - 295, "Cibersegurança para Home Office")
+                        "Concluiu com sucesso o treinamento de Boas Práticas de Cibersegurança")
+    c.drawCentredString(width / 2, height - 295, "para Home Office.")
 
-    # Data
-    c.setFont("Helvetica-Oblique", 12)
+    # Data (mais clara)
+    c.setFillColor(HexColor("#336699"))
+    c.setFont("Helvetica", 12)
     c.drawCentredString(width / 2, height - 330, datetime.now().strftime("%d/%m/%Y"))
 
-    # Assinatura (reduzida e sobre a linha inferior)
+    # Assinatura (reduzida e centralizada sobre a linha)
     try:
         assinatura_path = os.path.join('static', 'assinatura.png')
         assinatura_img = ImageReader(assinatura_path)
-        assinatura_width = 250
-        assinatura_height = 100
+        assinatura_width = 160
+        assinatura_height = 60
         x = width / 2 - assinatura_width / 2
-        y = 70  # Posição logo acima da linha azul
+        y = 95
         c.drawImage(assinatura_img, x, y, width=assinatura_width, height=assinatura_height,
                     preserveAspectRatio=True, mask='auto')
     except Exception as e:
         print(f"Erro ao carregar assinatura: {str(e)}")
 
-    # QR Code centralizado na parte branca
+    # QR Code (centralizado na faixa branca)
     try:
         qr_data = f"https://quiz.gepart.click/validar?nome={name}&score={score}"
         qr = qrcode.make(qr_data)
@@ -133,10 +135,11 @@ def generate_certificate(name, score):
         qr_img = ImageReader(qr_io)
 
         qr_size = 110
-        qr_x = 20  # Mais à esquerda, dentro da faixa branca
-        qr_y = 15
+        qr_x = 20
+        qr_y = 17
         c.drawImage(qr_img, qr_x, qr_y, width=qr_size, height=qr_size,
                     preserveAspectRatio=True, mask='auto')
+        c.setFillColor(azul)
         c.setFont("Helvetica", 8)
         c.drawString(qr_x, qr_y - 12, "Verifique: quiz.gepart.click")
     except Exception as e:
@@ -146,6 +149,7 @@ def generate_certificate(name, score):
     c.save()
     buffer.seek(0)
     return buffer
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
