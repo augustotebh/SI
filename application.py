@@ -166,3 +166,5 @@ def generate_certificate(name, score):
     c.save()
     buffer.seek(0)
     return buffer
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
