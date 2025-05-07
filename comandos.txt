@@ -13,3 +13,4 @@ sudo lsof -i :5000 | Ver quem está usando a porta 5000
 sudo kill -9 PID | Matar o processo
 python3 application.py | Rodar o Flask
 wget https://raw.githubusercontent.com/augustotebh/SI/main/static/cetificado_base.png
+chmod 777 *.png
