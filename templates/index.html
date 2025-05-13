@@ -38,27 +38,90 @@
             width: 50%;
             margin-bottom: 20px;
         }
+
+        /* Modal LGPD */
+        .modal {
+            display: block;
+            position: fixed;
+            z-index: 9999;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        .modal button {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        #quiz-form {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Quiz de Cibersegurança - A3Data</h1>
-    <form method="POST" action="/submit">
-        <label for="nome"><strong>Digite seu nome completo:</strong></label>
-        <input type="text" id="nome" name="nome" required>
+    <div id="lgpdModal" class="modal">
+        <div class="modal-content">
+            <h2>Consentimento LGPD</h2>
+            <p>Para gerar seu certificado com nome personalizado, precisamos do seu consentimento para tratar seus dados pessoais conforme a <strong>Lei Geral de Proteção de Dados Pessoais (LGPD) – Lei nº 13.709/2018</strong>.</p>
 
-        {% for q in questions %}
-            <div class="question">
-                <p><strong>{{ loop.index }}. {{ q.pergunta }}</strong></p>
-                {% for alternativa in q.alternativas %}
-                    <label>
-                        <input type="radio" name="{{ q.id }}" value="{{ alternativa }}" required>
-                        {{ alternativa }}
-                    </label>
-                {% endfor %}
-            </div>
-        {% endfor %}
+            <p><strong>Base legal para coleta de dados (Artigo 7º da LGPD):</strong></p>
+            <ul>
+                <li><strong>Consentimento:</strong> Autorização explícita do titular.</li>
+                <li><strong>Execução de contrato ou de procedimentos preliminares:</strong> Necessária para emissão do certificado.</li>
+                <li><strong>Legítimo interesse:</strong> Aplicação de políticas de segurança e controle de participação.</li>
+            </ul>
 
-        <input type="submit" value="Enviar Respostas">
-    </form>
+            <p>Ao clicar em <strong>"Aceito"</strong>, você autoriza o uso dessas informações exclusivamente para esse fim.</p>
+            <button onclick="acceptConsent()">Aceito</button>
+        </div>
+    </div>
+
+    <div id="quiz-form">
+        <h1>Quiz de Cibersegurança - A3Data</h1>
+        <form method="POST" action="/submit">
+            <label for="nome"><strong>Digite seu nome completo:</strong></label>
+            <input type="text" id="nome" name="nome" required>
+
+            {% for q in questions %}
+                <div class="question">
+                    <p><strong>{{ loop.index }}. {{ q.pergunta }}</strong></p>
+                    {% for alternativa in q.alternativas %}
+                        <label>
+                            <input type="radio" name="{{ q.id }}" value="{{ alternativa }}" required>
+                            {{ alternativa }}
+                        </label>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <input type="submit" value="Enviar Respostas">
+        </form>
+    </div>
+
+    <script>
+        function acceptConsent() {
+            document.getElementById('lgpdModal').style.display = 'none';
+            document.getElementById('quiz-form').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
+
