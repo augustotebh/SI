@@ -99,18 +99,18 @@ def generate_certificate(name, score):
     c.setFont("Helvetica-Bold", 26)
     c.drawCentredString(width / 2, height - 210, name)
 
-    # Texto e pontuação
+    # Texto e pontuação (movido mais para baixo)
     c.setFont("Helvetica", 16)
-    c.drawCentredString(width / 2, height - 250,
+    c.drawCentredString(width / 2, height - 270,
                         f"Pontuação: {score} pontos ({score / (len(questions) * 10) * 100:.0f}% de acertos)")
-    c.drawCentredString(width / 2, height - 275,
+    c.drawCentredString(width / 2, height - 295,
                         "Concluiu com sucesso o treinamento de Boas Práticas de Cibersegurança")
-    c.drawCentredString(width / 2, height - 295, "para Home Office.")
+    c.drawCentredString(width / 2, height - 315, "para Home Office.")
 
-    # Data (mais clara)
+    # Data (reposicionada mais à esquerda abaixo do texto)
     c.setFillColor(HexColor("#336699"))
     c.setFont("Helvetica", 12)
-    c.drawCentredString(width / 2, height - 330, datetime.now().strftime("%d/%m/%Y"))
+    c.drawString(100, height - 355, datetime.now().strftime("%d/%m/%Y"))
 
     # Assinatura (reduzida e centralizada sobre a linha)
     try:
@@ -150,6 +150,3 @@ def generate_certificate(name, score):
     buffer.seek(0)
     return buffer
 
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
