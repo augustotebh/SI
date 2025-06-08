@@ -3,94 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Quiz de Cibersegurança - A3Data</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            margin: 40px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        .question {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="submit"] {
-            padding: 12px 25px;
-            font-size: 16px;
-            background-color: #2980b9;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        input[type="text"] {
-            padding: 8px;
-            font-size: 16px;
-            width: 50%;
-            margin-bottom: 20px;
-        }
-
-        /* Modal LGPD */
-        .modal {
-            display: block;
-            position: fixed;
-            z-index: 9999;
-            padding-top: 100px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.6);
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 60%;
-            border-radius: 8px;
-            line-height: 1.6;
-        }
-        .modal button {
-            background-color: #0066cc;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        #quiz-form {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div id="lgpdModal" class="modal">
         <div class="modal-content">
             <h2>Consentimento LGPD</h2>
             <p>Para gerar seu certificado com nome personalizado, precisamos do seu consentimento para tratar seus dados pessoais conforme a <strong>Lei Geral de Proteção de Dados Pessoais (LGPD) – Lei nº 13.709/2018</strong>.</p>
-
             <p><strong>Base legal para coleta de dados (Artigo 7º da LGPD):</strong></p>
             <ul>
                 <li><strong>Consentimento:</strong> Autorização explícita do titular.</li>
                 <li><strong>Execução de contrato ou de procedimentos preliminares:</strong> Necessária para emissão do certificado.</li>
                 <li><strong>Legítimo interesse:</strong> Aplicação de políticas de segurança e controle de participação.</li>
             </ul>
-
             <p>Ao clicar em <strong>"Aceito"</strong>, você autoriza o uso dessas informações exclusivamente para esse fim.</p>
-            <button onclick="acceptConsent()">Aceito</button>
+            <button id="aceitoBtn">Aceito</button>
         </div>
     </div>
 
@@ -116,12 +43,8 @@
         </form>
     </div>
 
-    <script>
-        function acceptConsent() {
-            document.getElementById('lgpdModal').style.display = 'none';
-            document.getElementById('quiz-form').style.display = 'block';
-        }
-    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
+
 
