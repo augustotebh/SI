@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, send_file
+from flask import Flask, render_template, request, make_response, send_file, url_for
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
@@ -17,23 +17,43 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['JSON_AS_ASCII'] = False
 app.config['S3_BUCKET'] = 'elasticbeanstalk-us-east-1-619071334165'
 
-# Cliente S3
+# Inicializa o cliente S3
 s3 = boto3.client('s3')
 
-# Carregar perguntas
+# Carrega as perguntas do JSON
 with open('questions.json', 'r', encoding='utf-8') as f:
     questions = json.load(f)
 
-# Adicionar IDs únicos para cada pergunta
+# Adiciona IDs únicos para cada pergunta
 for idx, q in enumerate(questions):
     q['id'] = f"q{idx+1}"
 
+# Cabeçalhos de segurança ajustados
+def set_security_headers(response):
+    response.headers['Strict-Transport-Security'] = 'max-age=63072000; includeSubDomains; preload'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; "
+        "frame-ancestors 'none'; "
+        "object-src 'none';"
+    )
+    return response
+
+# Página principal com quiz
 @app.route('/', methods=['GET'])
 def index():
     response = make_response(render_template('index.html', questions=questions))
     response.headers['Content-Type'] = 'text/html; charset=utf-8'
-    return response
+    return set_security_headers(response)
 
+# Rota de submissão do quiz
 @app.route('/submit', methods=['POST'])
 def submit():
     try:
@@ -48,7 +68,7 @@ def submit():
         percentual = score / (len(questions) * 10) * 100
 
         if percentual < 70:
-            return f"""
+            html_content = f"""
             <html>
             <head><meta charset='utf-8'><title>Resultado</title></head>
             <body style="font-family:Arial;text-align:center;margin-top:50px;">
@@ -58,7 +78,9 @@ def submit():
                 <a href="/">Tentar novamente</a>
             </body>
             </html>
-            """, 403
+            """
+            response = make_response(html_content, 403)
+            return set_security_headers(response)
 
         pdf_buffer = generate_certificate(nome, score)
 
@@ -71,20 +93,22 @@ def submit():
             ContentType='application/pdf'
         )
 
-        return send_file(
+        response = send_file(
             pdf_buffer,
             mimetype='application/pdf',
             download_name=f"Certificado_{nome}.pdf"
         )
+        return set_security_headers(response)
 
     except Exception as e:
-        return f"Erro: {str(e)}", 500
+        response = make_response(f"Erro: {str(e)}", 500)
+        return set_security_headers(response)
 
+# Função para gerar certificado PDF
 def generate_certificate(name, score):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=landscape(A4))
     width, height = landscape(A4)
-
     azul = HexColor("#003366")
 
     # Imagem de fundo
@@ -94,12 +118,12 @@ def generate_certificate(name, score):
     except Exception as e:
         print(f"Erro ao carregar imagem de fundo: {e}")
 
-    # Nome (destaque maior)
+    # Nome
     c.setFillColor(azul)
     c.setFont("Helvetica-Bold", 26)
     c.drawCentredString(width / 2, height - 210, name)
 
-    # Texto e pontuação (movido mais para baixo)
+    # Pontuação
     c.setFont("Helvetica", 20)
     c.drawCentredString(width / 2, height - 270,
                         f"Pontuação: {score} pontos ({score / (len(questions) * 10) * 100:.0f}% de acertos)")
@@ -107,12 +131,12 @@ def generate_certificate(name, score):
                         "Concluiu com sucesso o treinamento de Boas Práticas de Cibersegurança")
     c.drawCentredString(width / 2, height - 315, "para Home Office.")
 
-    # Data (reposicionada mais à direita abaixo do texto)
+    # Data
     c.setFillColor(HexColor("#336699"))
     c.setFont("Helvetica", 12)
     c.drawString(650, height - 455, datetime.now().strftime("%d/%m/%Y"))
 
-    # Assinatura (reduzida e centralizada sobre a linha)
+    # Assinatura
     try:
         assinatura_path = os.path.join('static', 'assinatura.png')
         assinatura_img = ImageReader(assinatura_path)
@@ -120,12 +144,12 @@ def generate_certificate(name, score):
         assinatura_height = 60
         x = width / 2 - assinatura_width / 2
         y = 95
-        c.drawImage(assinatura_img, x, y, width=assinatura_width, height=assinatura_height,
+        c.drawImage(assinatura_img, x, y, width=160, height=60,
                     preserveAspectRatio=True, mask='auto')
     except Exception as e:
         print(f"Erro ao carregar assinatura: {str(e)}")
 
-    # QR Code (centralizado na faixa branca)
+    # QR Code
     try:
         qr_data = f"https://quiz.gepart.click/validar?nome={name}&score={score}"
         qr = qrcode.make(qr_data)
@@ -150,5 +174,7 @@ def generate_certificate(name, score):
     buffer.seek(0)
     return buffer
 
+# Execução da aplicação
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+
