@@ -17,18 +17,14 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['JSON_AS_ASCII'] = False
 app.config['S3_BUCKET'] = 'elasticbeanstalk-us-east-1-619071334165'
 
-# Inicializa o cliente S3
 s3 = boto3.client('s3')
 
-# Carrega as perguntas do JSON
 with open('questions.json', 'r', encoding='utf-8') as f:
     questions = json.load(f)
 
-# Adiciona IDs únicos para cada pergunta
 for idx, q in enumerate(questions):
     q['id'] = f"q{idx+1}"
 
-# Cabeçalhos de segurança ajustados
 def set_security_headers(response):
     response.headers['Strict-Transport-Security'] = 'max-age=63072000; includeSubDomains; preload'
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -38,22 +34,28 @@ def set_security_headers(response):
     response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline'; "
-        "style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data:; "
+        "script-src 'self'; "
+        "style-src 'self'; "
+        "img-src 'self'; "
+        "font-src 'self'; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'; "
         "frame-ancestors 'none'; "
-        "object-src 'none';"
+        "connect-src 'self'; "
+        "media-src 'none'; "
+        "manifest-src 'self'; "
+        "worker-src 'none'; "
+        "frame-src 'none';"
     )
     return response
 
-# Página principal com quiz
 @app.route('/', methods=['GET'])
 def index():
     response = make_response(render_template('index.html', questions=questions))
     response.headers['Content-Type'] = 'text/html; charset=utf-8'
     return set_security_headers(response)
 
-# Rota de submissão do quiz
 @app.route('/submit', methods=['POST'])
 def submit():
     try:
@@ -104,26 +106,22 @@ def submit():
         response = make_response(f"Erro: {str(e)}", 500)
         return set_security_headers(response)
 
-# Função para gerar certificado PDF
 def generate_certificate(name, score):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=landscape(A4))
     width, height = landscape(A4)
     azul = HexColor("#003366")
 
-    # Imagem de fundo
     try:
         fundo_img = ImageReader('static/certificado_base.png')
         c.drawImage(fundo_img, 0, 0, width=width, height=height)
     except Exception as e:
         print(f"Erro ao carregar imagem de fundo: {e}")
 
-    # Nome
     c.setFillColor(azul)
     c.setFont("Helvetica-Bold", 26)
     c.drawCentredString(width / 2, height - 210, name)
 
-    # Pontuação
     c.setFont("Helvetica", 20)
     c.drawCentredString(width / 2, height - 270,
                         f"Pontuação: {score} pontos ({score / (len(questions) * 10) * 100:.0f}% de acertos)")
@@ -131,25 +129,18 @@ def generate_certificate(name, score):
                         "Concluiu com sucesso o treinamento de Boas Práticas de Cibersegurança")
     c.drawCentredString(width / 2, height - 315, "para Home Office.")
 
-    # Data
     c.setFillColor(HexColor("#336699"))
     c.setFont("Helvetica", 12)
     c.drawString(650, height - 455, datetime.now().strftime("%d/%m/%Y"))
 
-    # Assinatura
     try:
         assinatura_path = os.path.join('static', 'assinatura.png')
         assinatura_img = ImageReader(assinatura_path)
-        assinatura_width = 160
-        assinatura_height = 60
-        x = width / 2 - assinatura_width / 2
-        y = 95
-        c.drawImage(assinatura_img, x, y, width=160, height=60,
+        c.drawImage(assinatura_img, width / 2 - 80, 95, width=160, height=60,
                     preserveAspectRatio=True, mask='auto')
     except Exception as e:
         print(f"Erro ao carregar assinatura: {str(e)}")
 
-    # QR Code
     try:
         qr_data = f"https://quiz.gepart.click/validar?nome={name}&score={score}"
         qr = qrcode.make(qr_data)
@@ -158,14 +149,11 @@ def generate_certificate(name, score):
         qr_io.seek(0)
         qr_img = ImageReader(qr_io)
 
-        qr_size = 110
-        qr_x = 20
-        qr_y = 17
-        c.drawImage(qr_img, qr_x, qr_y, width=qr_size, height=qr_size,
+        c.drawImage(qr_img, 20, 17, width=110, height=110,
                     preserveAspectRatio=True, mask='auto')
         c.setFillColor(azul)
         c.setFont("Helvetica", 8)
-        c.drawString(qr_x, qr_y - 12, "Verifique: quiz.gepart.click")
+        c.drawString(20, 5, "Verifique: quiz.gepart.click")
     except Exception as e:
         print(f"Erro ao gerar QR Code: {str(e)}")
 
@@ -174,7 +162,5 @@ def generate_certificate(name, score):
     buffer.seek(0)
     return buffer
 
-# Execução da aplicação
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
