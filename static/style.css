@@ -1,57 +1,77 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f0f0f0;
+    background: #f9f9f9;
+    margin: 40px;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-h1, h2 {
+h1 {
     color: #2c3e50;
 }
 
-.pergunta {
-    margin: 20px 0;
+.question {
+    margin-bottom: 20px;
     padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.opcao {
-    margin: 10px 0;
+label {
+    display: block;
+    margin-bottom: 5px;
 }
 
-button {
-    background-color: #3498db;
+input[type="submit"] {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #2980b9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    padding: 8px;
+    font-size: 16px;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.modal button {
+    background-color: #0066cc;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 20px;
 }
 
-button:hover {
-    background-color: #2980b9;
-}
-
-.resultado {
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #ecf0f1;
-    border-radius: 5px;
-}
-
-.certificado a {
-    color: #27ae60;
-    text-decoration: none;
-    font-weight: bold;
+#quiz-form {
+    display: none;
 }
 
